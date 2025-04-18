@@ -7,7 +7,7 @@ import random
 
 from unittest import mock
 
-import bt
+import bt2
 
 
 def test_backtest_copies_strategy():
@@ -16,7 +16,7 @@ def test_backtest_copies_strategy():
         index=pd.date_range("2010-01-01", periods=5), columns=["a", "b"], data=100
     )
 
-    actual = bt.Backtest(s, data, progress_bar=False)
+    actual = bt2.Backtest(s, data, progress_bar=False)
 
     assert id(s) != id(actual.strategy)
 
@@ -27,7 +27,7 @@ def test_backtest_dates_set():
         index=pd.date_range("2010-01-01", periods=5), columns=["a", "b"], data=100
     )
 
-    actual = bt.Backtest(s, data, progress_bar=False)
+    actual = bt2.Backtest(s, data, progress_bar=False)
 
     # must account for 't0' addition
     assert len(actual.dates) == len(data.index) + 1
@@ -42,7 +42,7 @@ def test_backtest_auto_name():
         index=pd.date_range("2010-01-01", periods=5), columns=["a", "b"], data=100
     )
 
-    actual = bt.Backtest(s, data, progress_bar=False)
+    actual = bt2.Backtest(s, data, progress_bar=False)
 
     assert actual.name == "s"
 
@@ -53,7 +53,7 @@ def test_initial_capital_set():
         index=pd.date_range("2010-01-01", periods=5), columns=["a", "b"], data=100
     )
 
-    actual = bt.Backtest(s, data, initial_capital=302, progress_bar=False)
+    actual = bt2.Backtest(s, data, initial_capital=302, progress_bar=False)
     actual.run()
 
     s = actual.strategy
@@ -69,7 +69,7 @@ def test_run_loop():
         index=pd.date_range("2010-01-01", periods=5), columns=["a", "b"], data=100
     )
 
-    actual = bt.Backtest(s, data, initial_capital=302, progress_bar=False)
+    actual = bt2.Backtest(s, data, initial_capital=302, progress_bar=False)
     actual.run()
 
     s = actual.strategy
@@ -92,12 +92,12 @@ def test_turnover():
     data.loc[dts[3], "a"] = 115
     data.loc[dts[3], "b"] = 85
 
-    s = bt.Strategy(
-        "s", [bt.algos.SelectAll(), bt.algos.WeighEqually(), bt.algos.Rebalance()]
+    s = bt2.Strategy(
+        "s", [bt2.algos.SelectAll(), bt2.algos.WeighEqually(), bt2.algos.Rebalance()]
     )
 
-    t = bt.Backtest(s, data, commissions=lambda x, y: 0, progress_bar=False)
-    res = bt.run(t)
+    t = bt2.Backtest(s, data, commissions=lambda x, y: 0, progress_bar=False)
+    res = bt2.run(t)
 
     t = res.backtests["s"]
 
@@ -125,25 +125,25 @@ def test_Results_helper_functions():
     pdf = 100 * np.cumprod(1 + rdf)
 
     # algo to fire on the beginning of every month and to run on the first date
-    runDailyAlgo = bt.algos.RunDaily(run_on_first_date=True)
+    runDailyAlgo = bt2.algos.RunDaily(run_on_first_date=True)
 
     # algo to set the weights
     #  it will only run when runMonthlyAlgo returns true
     #  which only happens on the first of every month
     weights = pd.Series([0.6, 0.4], index=rdf.columns)
-    weighSpecifiedAlgo = bt.algos.WeighSpecified(**weights)
+    weighSpecifiedAlgo = bt2.algos.WeighSpecified(**weights)
 
     # algo to rebalance the current weights to weights set by weighSpecified
     #  will only run when weighSpecifiedAlgo returns true
     #  which happens every time it runs
-    rebalAlgo = bt.algos.Rebalance()
+    rebalAlgo = bt2.algos.Rebalance()
 
     # a strategy that rebalances monthly to specified weights
-    strat = bt.Strategy("static", [runDailyAlgo, weighSpecifiedAlgo, rebalAlgo])
+    strat = bt2.Strategy("static", [runDailyAlgo, weighSpecifiedAlgo, rebalAlgo])
 
-    backtest = bt.Backtest(strat, pdf, integer_positions=False, progress_bar=False)
+    backtest = bt2.Backtest(strat, pdf, integer_positions=False, progress_bar=False)
 
-    res = bt.run(backtest)
+    res = bt2.run(backtest)
 
     assert type(res.get_security_weights()) is pd.DataFrame
 
@@ -169,30 +169,30 @@ def test_Results_helper_functions_fi():
     notional = pd.Series(1e6, index=pdf.index)
 
     # algo to fire on the beginning of every month and to run on the first date
-    runDailyAlgo = bt.algos.RunDaily(run_on_first_date=True)
+    runDailyAlgo = bt2.algos.RunDaily(run_on_first_date=True)
 
     # algo to select all securities
-    selectAll = bt.algos.SelectAll()
+    selectAll = bt2.algos.SelectAll()
 
     # algo to set the weights
     #  it will only run when runMonthlyAlgo returns true
     #  which only happens on the first of every month
-    weighRandomly = bt.algos.WeighRandomly()
+    weighRandomly = bt2.algos.WeighRandomly()
 
     # algo to set the notional of the fixed income strategy
-    setNotional = bt.algos.SetNotional("notional")
+    setNotional = bt2.algos.SetNotional("notional")
 
     # algo to rebalance the current weights to weights set by weighSpecified
     #  will only run when weighSpecifiedAlgo returns true
     #  which happens every time it runs
-    rebalAlgo = bt.algos.Rebalance()
+    rebalAlgo = bt2.algos.Rebalance()
 
     # a strategy that rebalances monthly to specified weights
-    strat = bt.FixedIncomeStrategy(
+    strat = bt2.FixedIncomeStrategy(
         "random", [runDailyAlgo, selectAll, weighRandomly, setNotional, rebalAlgo]
     )
 
-    backtest = bt.Backtest(
+    backtest = bt2.Backtest(
         strat,
         pdf,
         initial_capital=0,
@@ -201,7 +201,7 @@ def test_Results_helper_functions_fi():
         additional_data={"mydata": pdf, "notional": notional},
     )
     bidoffer = 1.0
-    backtest2 = bt.Backtest(
+    backtest2 = bt2.Backtest(
         strat,
         pdf,
         initial_capital=0,
@@ -214,9 +214,9 @@ def test_Results_helper_functions_fi():
         },
     )
     random.seed(1234)
-    res = bt.run(backtest)
+    res = bt2.run(backtest)
     random.seed(1234)
-    res2 = bt.run(backtest2)
+    res2 = bt2.run(backtest2)
 
     assert type(res.get_security_weights()) is pd.DataFrame
 
@@ -255,9 +255,9 @@ def test_30_min_data():
     tw[sma50 <= sma200] = -1.0
     tw[sma200.isnull()] = 0.0
 
-    ma_cross = bt.Strategy("ma_cross", [bt.algos.WeighTarget(tw), bt.algos.Rebalance()])
-    t = bt.Backtest(ma_cross, pdf, progress_bar=False)
-    res = bt.run(t)
+    ma_cross = bt2.Strategy("ma_cross", [bt2.algos.WeighTarget(tw), bt2.algos.Rebalance()])
+    t = bt2.Backtest(ma_cross, pdf, progress_bar=False)
+    res = bt2.run(t)
 
     wait = 1
 
@@ -281,23 +281,23 @@ def test_RenomalizedFixedIncomeResult():
     coupons = pd.DataFrame(index=dts, columns=["a"], data=0.0)
 
     algos = [
-        bt.algos.SelectAll(),
-        bt.algos.WeighTarget(weights),
-        bt.algos.SetNotional("notional"),
-        bt.algos.Rebalance(),
+        bt2.algos.SelectAll(),
+        bt2.algos.WeighTarget(weights),
+        bt2.algos.SetNotional("notional"),
+        bt2.algos.Rebalance(),
     ]
-    children = [bt.CouponPayingSecurity("a")]
+    children = [bt2.CouponPayingSecurity("a")]
 
-    s = bt.FixedIncomeStrategy("s", algos, children=children)
+    s = bt2.FixedIncomeStrategy("s", algos, children=children)
 
-    t = bt.Backtest(
+    t = bt2.Backtest(
         s,
         data,
         initial_capital=0,
         additional_data={"notional": pd.Series(1e6, dts), "coupons": coupons},
         progress_bar=False,
     )
-    res = bt.run(t)
+    res = bt2.run(t)
 
     t = res.backtests["s"]
 
@@ -308,7 +308,7 @@ def test_RenomalizedFixedIncomeResult():
     assert res.stats["s"].total_return == 0
 
     # Renormalizing results to a constant size "fixes" this
-    norm_res = bt.backtest.RenormalizedFixedIncomeResult(1e6, *res.backtest_list)
+    norm_res = bt2.backtest.RenormalizedFixedIncomeResult(1e6, *res.backtest_list)
     assert norm_res.stats["s"].total_return == pytest.approx(t.strategy.value / 1e6, 16)
 
     # Check that using the lagged notional value series leads to the same results
@@ -316,7 +316,7 @@ def test_RenomalizedFixedIncomeResult():
     # series from the other data available on the strategy
     notl_values = t.strategy.notional_values.shift(1)
     notl_values[dts[0]] = 1e6  # The notional value *before* any trades are put on
-    norm_res = bt.backtest.RenormalizedFixedIncomeResult(
+    norm_res = bt2.backtest.RenormalizedFixedIncomeResult(
         notl_values, *res.backtest_list
     )
 

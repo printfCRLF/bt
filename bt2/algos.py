@@ -10,8 +10,8 @@ import numpy as np
 import pandas as pd
 import sklearn.covariance
 
-import bt
-from bt.core import Algo, AlgoStack, SecurityBase, is_zero
+import bt2
+from bt2.core import Algo, AlgoStack, SecurityBase, is_zero
 
 
 def run_always(f):
@@ -569,7 +569,7 @@ class SelectHasData(Algo):
         super(SelectHasData, self).__init__()
         self.lookback = lookback
         if min_count is None:
-            min_count = bt.ffn.get_num_days_required(lookback)
+            min_count = bt2.ffn.get_num_days_required(lookback)
         self.min_count = min_count
         self.include_no_data = include_no_data
         self.include_negative = include_negative
@@ -1124,7 +1124,7 @@ class WeighInvVol(Algo):
 
         t0 = target.now - self.lag
         prc = target.universe.loc[t0 - self.lookback : t0, selected]
-        tw = bt.ffn.calc_inv_vol_weights(prc.to_returns().dropna())
+        tw = bt2.ffn.calc_inv_vol_weights(prc.to_returns().dropna())
         target.temp["weights"] = tw.dropna()
         return True
 
@@ -1201,7 +1201,7 @@ class WeighERC(Algo):
 
         t0 = target.now - self.lag
         prc = target.universe.loc[t0 - self.lookback : t0, selected]
-        tw = bt.ffn.calc_erc_weights(
+        tw = bt2.ffn.calc_erc_weights(
             prc.to_returns().dropna(),
             initial_weights=self.initial_weights,
             risk_weights=self.risk_weights,
@@ -1269,7 +1269,7 @@ class WeighMeanVar(Algo):
 
         t0 = target.now - self.lag
         prc = target.universe.loc[t0 - self.lookback : t0, selected]
-        tw = bt.ffn.calc_mean_var_weights(
+        tw = bt2.ffn.calc_mean_var_weights(
             prc.to_returns().dropna(),
             weight_bounds=self.bounds,
             covar_method=self.covar_method,
@@ -1319,7 +1319,7 @@ class WeighRandomly(Algo):
 
         w = {}
         try:
-            rw = bt.ffn.random_weights(n, self.bounds, self.weight_sum)
+            rw = bt2.ffn.random_weights(n, self.bounds, self.weight_sum)
             w = dict(zip(sel, rw))
         except ValueError:
             pass
@@ -1426,7 +1426,7 @@ class LimitWeights(Algo):
         if self.limit < 1.0 / len(tw):
             tw = {}
         else:
-            tw = bt.ffn.limit_weights(tw, self.limit)
+            tw = bt2.ffn.limit_weights(tw, self.limit)
         target.temp["weights"] = tw
 
         return True
@@ -1478,7 +1478,7 @@ class TargetVol(Algo):
 
         t0 = target.now - self.lag
         prc = target.universe.loc[t0 - self.lookback : t0, selected]
-        returns = bt.ffn.to_returns(prc)
+        returns = bt2.ffn.to_returns(prc)
 
         # calc covariance matrix
         if self.covar_method == "ledoit-wolf":
@@ -1566,7 +1566,7 @@ class PTE_Rebalance(Algo):
 
         t0 = target.now - self.lag
         prc = target.universe.loc[t0 - self.lookback : t0, cols]
-        returns = bt.ffn.to_returns(prc)
+        returns = bt2.ffn.to_returns(prc)
 
         # calc covariance matrix
         if self.covar_method == "ledoit-wolf":
@@ -1935,7 +1935,7 @@ class SelectTypes(Algo):
         * selected
     """
 
-    def __init__(self, include_types=(bt.core.Node,), exclude_types=()):
+    def __init__(self, include_types=(bt2.core.Node,), exclude_types=()):
         super(SelectTypes, self).__init__()
         self.include_types = include_types
         self.exclude_types = exclude_types or (type(None),)
@@ -2232,7 +2232,7 @@ class UpdateRisk(Algo):
         if self.measure not in target.risk:
             self._setup_measure(target, set_history)
 
-        if isinstance(target, bt.core.SecurityBase):
+        if isinstance(target, bt2.core.SecurityBase):
             # Use target.root.now as non-traded securities may not have been updated yet
             # and there is no need to update them here as we only use position
             index = unit_risk_frame.index.get_loc(target.root.now)

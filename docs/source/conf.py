@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../../"))
 sys.path.insert(0, os.path.abspath("../../bt"))
 sys.path.insert(0, os.path.abspath("_themes/klink"))
 
-import bt  # noqa: E402
+import bt2  # noqa: E402
 import klink  # noqa: E402
 
 klink.convert_notebooks()
@@ -64,7 +64,7 @@ If you find a bug, please <a href="https://github.com/pmorissette/bt/issues/new"
 # built documents.
 #
 # The short X.Y version.
-version = bt.__version__
+version = bt2.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 

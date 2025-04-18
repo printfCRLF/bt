@@ -3,7 +3,7 @@ Performance benchmarks
 """
 import numpy as np
 import pandas as pd
-import bt
+import bt2
 import cProfile
 
 
@@ -12,18 +12,18 @@ def benchmark_1():
     idx = pd.date_range("1990-01-01", freq="B", periods=x.shape[0])
     data = np.exp(pd.DataFrame(x, index=idx).cumsum())
 
-    s = bt.Strategy(
+    s = bt2.Strategy(
         "s",
         [
-            bt.algos.RunMonthly(),
-            bt.algos.SelectRandomly(len(data.columns) / 2),
-            bt.algos.WeighRandomly(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunMonthly(),
+            bt2.algos.SelectRandomly(len(data.columns) / 2),
+            bt2.algos.WeighRandomly(),
+            bt2.algos.Rebalance(),
         ],
     )
 
-    t = bt.Backtest(s, data)
-    return bt.run(t)
+    t = bt2.Backtest(s, data)
+    return bt2.run(t)
 
 
 def benchmark_2():
@@ -32,19 +32,19 @@ def benchmark_2():
     data = np.exp(pd.DataFrame(x, index=idx).cumsum())
     bidoffer = data * 0.01
     coupons = data * 0.0
-    s = bt.FixedIncomeStrategy(
+    s = bt2.FixedIncomeStrategy(
         "s",
         algos=[
-            bt.algos.RunMonthly(),
-            bt.algos.SelectRandomly(len(data.columns) / 2),
-            bt.algos.WeighRandomly(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunMonthly(),
+            bt2.algos.SelectRandomly(len(data.columns) / 2),
+            bt2.algos.WeighRandomly(),
+            bt2.algos.Rebalance(),
         ],
-        children=[bt.CouponPayingSecurity(c) for c in data],
+        children=[bt2.CouponPayingSecurity(c) for c in data],
     )
 
-    t = bt.Backtest(s, data, additional_data={"bidoffer": bidoffer, "coupons": coupons})
-    return bt.run(t)
+    t = bt2.Backtest(s, data, additional_data={"bidoffer": bidoffer, "coupons": coupons})
+    return bt2.run(t)
 
 
 def benchmark_3():
@@ -57,20 +57,20 @@ def benchmark_3():
     x = np.random.randn(10000, 1000) * 0.01
     idx = pd.date_range("1990-01-01", freq="B", periods=x.shape[0])
     data = np.exp(pd.DataFrame(x, index=idx).cumsum())
-    children = [bt.Security(name=i, multiplier=10, lazy_add=False) for i in range(1000)]
-    s = bt.Strategy(
+    children = [bt2.Security(name=i, multiplier=10, lazy_add=False) for i in range(1000)]
+    s = bt2.Strategy(
         "s",
         [
-            bt.algos.RunMonthly(),
-            bt.algos.SelectThese([0, 1]),
-            bt.algos.WeighRandomly(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunMonthly(),
+            bt2.algos.SelectThese([0, 1]),
+            bt2.algos.WeighRandomly(),
+            bt2.algos.Rebalance(),
         ],
         children=children,
     )
 
-    t = bt.Backtest(s, data)
-    return bt.run(t)
+    t = bt2.Backtest(s, data)
+    return bt2.run(t)
 
 
 if __name__ == "__main__":

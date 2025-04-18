@@ -7,8 +7,8 @@ import pandas as pd
 import pytest
 import random
 
-import bt
-import bt.algos as algos
+import bt2
+import bt2.algos as algos
 
 
 def test_algo_name():
@@ -37,7 +37,7 @@ def test_algo_stack():
 
     target = mock.MagicMock()
 
-    stack = bt.AlgoStack(algo1, algo2, algo3)
+    stack = bt2.AlgoStack(algo1, algo2, algo3)
 
     actual = stack(target)
     assert not actual
@@ -60,7 +60,7 @@ def test_print_temp_data():
 
 
 def test_print_info():
-    target = bt.Strategy("s", [])
+    target = bt2.Strategy("s", [])
     target.temp = {}
 
     algo = algos.PrintInfo()
@@ -86,7 +86,7 @@ def test_run_period():
     algo = algos.RunPeriod()
 
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
     dts = target.data.index
 
@@ -110,7 +110,7 @@ def test_run_period():
     )
 
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
     dts = target.data.index
 
@@ -140,7 +140,7 @@ def test_run_daily():
     algo = algos.RunDaily()
 
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     target.now = dts[1]
@@ -156,7 +156,7 @@ def test_run_weekly():
 
     algo = algos.RunWeekly()
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of week
@@ -171,7 +171,7 @@ def test_run_weekly():
         run_on_first_date=False, run_on_end_of_period=True, run_on_last_date=True
     )
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of week
@@ -187,7 +187,7 @@ def test_run_weekly():
     )
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # check next year
@@ -204,7 +204,7 @@ def test_run_monthly():
 
     algo = algos.RunMonthly()
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of month
@@ -219,7 +219,7 @@ def test_run_monthly():
         run_on_first_date=False, run_on_end_of_period=True, run_on_last_date=True
     )
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of month
@@ -235,7 +235,7 @@ def test_run_monthly():
     )
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # check next year
@@ -252,7 +252,7 @@ def test_run_quarterly():
 
     algo = algos.RunQuarterly()
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of quarter
@@ -267,7 +267,7 @@ def test_run_quarterly():
         run_on_first_date=False, run_on_end_of_period=True, run_on_last_date=True
     )
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of quarter
@@ -283,7 +283,7 @@ def test_run_quarterly():
     )
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # check next year
@@ -300,7 +300,7 @@ def test_run_yearly():
 
     algo = algos.RunYearly()
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of year
@@ -315,7 +315,7 @@ def test_run_yearly():
         run_on_first_date=False, run_on_end_of_period=True, run_on_last_date=True
     )
     # adds the initial day
-    backtest = bt.Backtest(bt.Strategy("", [algo]), data)
+    backtest = bt2.Backtest(bt2.Strategy("", [algo]), data)
     target.data = backtest.data
 
     # end of year
@@ -345,15 +345,15 @@ def test_run_if_out_of_bounds():
     algo = algos.RunIfOutOfBounds(0.5)
     dts = pd.date_range("2010-01-01", periods=3)
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     s.setup(data)
 
     s.temp["selected"] = ["c1", "c2"]
     s.temp["weights"] = {"c1": 0.5, "c2": 0.5}
     s.update(dts[0])
-    s.children["c1"] = bt.core.SecurityBase("c1")
-    s.children["c2"] = bt.core.SecurityBase("c2")
+    s.children["c1"] = bt2.core.SecurityBase("c1")
+    s.children["c2"] = bt2.core.SecurityBase("c2")
 
     s.children["c1"]._weight = 0.5
     s.children["c2"]._weight = 0.5
@@ -403,7 +403,7 @@ def test_run_after_days():
 def test_set_notional():
     algo = algos.SetNotional("notional")
 
-    s = bt.FixedIncomeStrategy("s")
+    s = bt2.FixedIncomeStrategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -426,7 +426,7 @@ def test_set_notional():
 def test_rebalance():
     algo = algos.Rebalance()
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
@@ -461,7 +461,7 @@ def test_rebalance():
 def test_rebalance_with_commissions():
     algo = algos.Rebalance()
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     s.set_commissions(lambda q, p: 1)
 
     dts = pd.date_range("2010-01-01", periods=3)
@@ -498,7 +498,7 @@ def test_rebalance_with_commissions():
 def test_rebalance_with_cash():
     algo = algos.Rebalance()
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     s.set_commissions(lambda q, p: 1)
 
     dts = pd.date_range("2010-01-01", periods=3)
@@ -540,7 +540,7 @@ def test_rebalance_updatecount():
 
     algo = algos.Rebalance()
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     s.use_integer_positions(False)
 
     dts = pd.date_range("2010-01-01", periods=3)
@@ -552,14 +552,14 @@ def test_rebalance_updatecount():
 
     s.temp["weights"] = {"c1": 0.25, "c2": 0.25, "c3": 0.25, "c4": 0.25}
 
-    update = bt.core.SecurityBase.update
-    bt.core.SecurityBase._update_call_count = 0
+    update = bt2.core.SecurityBase.update
+    bt2.core.SecurityBase._update_call_count = 0
 
     def side_effect(self, *args, **kwargs):
-        bt.core.SecurityBase._update_call_count += 1
+        bt2.core.SecurityBase._update_call_count += 1
         return update(self, *args, **kwargs)
 
-    with mock.patch.object(bt.core.SecurityBase, "update", side_effect) as mock_update:
+    with mock.patch.object(bt2.core.SecurityBase, "update", side_effect) as mock_update:
         assert algo(s)
 
     assert s.value == 1000
@@ -567,48 +567,48 @@ def test_rebalance_updatecount():
 
     # Update is called once when each weighted security is created (4)
     # and once for each security after all allocations are made (4)
-    assert bt.core.SecurityBase._update_call_count == 8
+    assert bt2.core.SecurityBase._update_call_count == 8
 
     s.update(dts[1])
     s.temp["weights"] = {"c1": 0.5, "c2": 0.5}
 
-    update = bt.core.SecurityBase.update
-    bt.core.SecurityBase._update_call_count = 0
+    update = bt2.core.SecurityBase.update
+    bt2.core.SecurityBase._update_call_count = 0
 
     def side_effect(self, *args, **kwargs):
-        bt.core.SecurityBase._update_call_count += 1
+        bt2.core.SecurityBase._update_call_count += 1
         return update(self, *args, **kwargs)
 
-    with mock.patch.object(bt.core.SecurityBase, "update", side_effect) as mock_update:
+    with mock.patch.object(bt2.core.SecurityBase, "update", side_effect) as mock_update:
         assert algo(s)
 
     # Update is called once for each weighted security before allocation (4)
     # and once for each security after all allocations are made (4)
-    assert bt.core.SecurityBase._update_call_count == 8
+    assert bt2.core.SecurityBase._update_call_count == 8
 
     s.update(dts[2])
     s.temp["weights"] = {"c1": 0.25, "c2": 0.25, "c3": 0.25, "c4": 0.25}
 
-    update = bt.core.SecurityBase.update
-    bt.core.SecurityBase._update_call_count = 0
+    update = bt2.core.SecurityBase.update
+    bt2.core.SecurityBase._update_call_count = 0
 
     def side_effect(self, *args, **kwargs):
-        bt.core.SecurityBase._update_call_count += 1
+        bt2.core.SecurityBase._update_call_count += 1
         return update(self, *args, **kwargs)
 
-    with mock.patch.object(bt.core.SecurityBase, "update", side_effect) as mock_update:
+    with mock.patch.object(bt2.core.SecurityBase, "update", side_effect) as mock_update:
         assert algo(s)
 
     # Update is called once for each weighted security before allocation (2)
     # and once for each security after all allocations are made (4)
-    assert bt.core.SecurityBase._update_call_count == 6
+    assert bt2.core.SecurityBase._update_call_count == 6
 
 
 def test_rebalance_fixedincome():
     algo = algos.Rebalance()
-    c1 = bt.Security("c1")
-    c2 = bt.CouponPayingSecurity("c2")
-    s = bt.FixedIncomeStrategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.CouponPayingSecurity("c2")
+    s = bt2.FixedIncomeStrategy("s", children=[c1, c2])
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
@@ -647,7 +647,7 @@ def test_rebalance_fixedincome():
 def test_select_all():
     algo = algos.SelectAll()
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -701,7 +701,7 @@ def test_select_all():
 def test_select_randomly_n_none():
     algo = algos.SelectRandomly(n=None)  # Behaves like SelectAll
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -754,7 +754,7 @@ def test_select_randomly_n_none():
 
 def test_select_randomly():
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100.0)
@@ -788,7 +788,7 @@ def test_select_randomly():
 
 
 def test_select_these():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -848,7 +848,7 @@ def test_select_these():
 
 
 def test_select_where_all():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -904,7 +904,7 @@ def test_select_where_all():
 
 
 def test_select_where():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -934,7 +934,7 @@ def test_select_where():
 
 
 def test_select_where_legacy():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -964,7 +964,7 @@ def test_select_where_legacy():
 
 
 def test_select_regex():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     algo = algos.SelectRegex("c1")
 
     s.temp["selected"] = ["a1", "c1", "c2", "c11", "cc1"]
@@ -977,7 +977,7 @@ def test_select_regex():
 
 
 def test_resolve_on_the_run():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "b1"], data=100.0)
     data.loc[dts[1], "c1"] = np.nan
@@ -1035,13 +1035,13 @@ def test_resolve_on_the_run():
 
 
 def test_select_types():
-    c1 = bt.Security("c1")
-    c2 = bt.CouponPayingSecurity("c2")
-    c3 = bt.HedgeSecurity("c3")
-    c4 = bt.CouponPayingHedgeSecurity("c4")
-    c5 = bt.FixedIncomeSecurity("c5")
+    c1 = bt2.Security("c1")
+    c2 = bt2.CouponPayingSecurity("c2")
+    c3 = bt2.HedgeSecurity("c3")
+    c4 = bt2.CouponPayingHedgeSecurity("c4")
+    c5 = bt2.FixedIncomeSecurity("c5")
 
-    s = bt.Strategy("p", children=[c1, c2, c3, c4, c5])
+    s = bt2.Strategy("p", children=[c1, c2, c3, c4, c5])
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3", "c4", "c5"], data=100.0)
@@ -1052,19 +1052,19 @@ def test_select_types():
     s.update(dts[i])
 
     algo = algos.SelectTypes(
-        include_types=(bt.Security, bt.HedgeSecurity), exclude_types=()
+        include_types=(bt2.Security, bt2.HedgeSecurity), exclude_types=()
     )
     assert algo(s)
     assert set(s.temp.pop("selected")) == set(["c1", "c3"])
 
     algo = algos.SelectTypes(
-        include_types=(bt.core.SecurityBase,), exclude_types=(bt.CouponPayingSecurity,)
+        include_types=(bt2.core.SecurityBase,), exclude_types=(bt2.CouponPayingSecurity,)
     )
     assert algo(s)
     assert set(s.temp.pop("selected")) == set(["c1", "c3", "c5"])
 
     s.temp["selected"] = ["c1", "c2", "c3"]
-    algo = algos.SelectTypes(include_types=(bt.core.SecurityBase,))
+    algo = algos.SelectTypes(include_types=(bt2.core.SecurityBase,))
     assert algo(s)
     assert set(s.temp.pop("selected")) == set(["c1", "c2", "c3"])
 
@@ -1072,7 +1072,7 @@ def test_select_types():
 def test_weight_equally():
     algo = algos.WeighEqually()
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
@@ -1093,7 +1093,7 @@ def test_weight_equally():
 def test_weight_specified():
     algo = algos.WeighSpecified(c1=0.6, c2=0.4)
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
@@ -1113,7 +1113,7 @@ def test_weight_specified():
 
 
 def test_scale_weights():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     algo = algos.ScaleWeights(-0.5)
 
     s.temp["weights"] = {"c1": 0.5, "c2": -0.4, "c3": 0}
@@ -1124,7 +1124,7 @@ def test_scale_weights():
 def test_select_has_data():
     algo = algos.SelectHasData(min_count=3, lookback=pd.DateOffset(days=3))
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=10)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1143,7 +1143,7 @@ def test_select_has_data():
 def test_select_has_data_preselected():
     algo = algos.SelectHasData(min_count=3, lookback=pd.DateOffset(days=3))
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1165,7 +1165,7 @@ def test_weigh_erc(mock_erc):
 
     mock_erc.return_value = pd.Series({"c1": 0.3, "c2": 0.7})
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=5)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1190,7 +1190,7 @@ def test_weigh_erc(mock_erc):
 def test_weigh_target():
     algo = algos.WeighTarget("target")
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1221,7 +1221,7 @@ def test_weigh_target():
 def test_weigh_inv_vol():
     algo = algos.WeighInvVol(lookback=pd.DateOffset(days=5))
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=5)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1256,7 +1256,7 @@ def test_weigh_mean_var(mock_mv):
 
     mock_mv.return_value = pd.Series({"c1": 0.3, "c2": 0.7})
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=5)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1279,7 +1279,7 @@ def test_weigh_mean_var(mock_mv):
 
 
 def test_weigh_randomly():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     s.temp["selected"] = ["c1", "c2", "c3"]
 
     algo = algos.WeighRandomly()
@@ -1299,7 +1299,7 @@ def test_weigh_randomly():
 
 
 def test_set_stat():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1329,7 +1329,7 @@ def test_set_stat():
 
 
 def test_set_stat_legacy():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1359,7 +1359,7 @@ def test_set_stat_legacy():
 def test_stat_total_return():
     algo = algos.StatTotalReturn(lookback=pd.DateOffset(days=3))
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1380,7 +1380,7 @@ def test_stat_total_return():
 def test_select_n():
     algo = algos.SelectN(n=1, sort_descending=True)
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1420,7 +1420,7 @@ def test_select_n():
 def test_select_n_perc():
     algo = algos.SelectN(n=0.5, sort_descending=True)
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1440,7 +1440,7 @@ def test_select_n_perc():
 def test_select_momentum():
     algo = algos.SelectMomentum(n=1, lookback=pd.DateOffset(days=3))
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1459,7 +1459,7 @@ def test_select_momentum():
 
 def test_limit_weights():
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
 
@@ -1488,7 +1488,7 @@ def test_limit_weights():
 
 
 def test_limit_deltas():
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
 
@@ -1539,9 +1539,9 @@ def test_limit_deltas():
     assert w["c2"] == -0.3
 
     # set exisitng weight
-    s.children["c1"] = bt.core.SecurityBase("c1")
+    s.children["c1"] = bt2.core.SecurityBase("c1")
     s.children["c1"]._weight = 0.3
-    s.children["c2"] = bt.core.SecurityBase("c2")
+    s.children["c2"] = bt2.core.SecurityBase("c2")
     s.children["c2"]._weight = -0.7
 
     s.temp["weights"] = {"c1": 0.5, "c2": -0.5}
@@ -1719,7 +1719,7 @@ def test_or():
 
 def test_TargetVol():
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=7)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1783,7 +1783,7 @@ def test_TargetVol():
 
 def test_PTE_Rebalance():
 
-    s = bt.Strategy("s")
+    s = bt2.Strategy("s")
 
     dts = pd.date_range("2010-01-01", periods=30 * 4)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100.0)
@@ -1813,7 +1813,7 @@ def test_PTE_Rebalance():
     wdf["c1"] = 0.5
     wdf["c2"] = 0.5
 
-    PTE_rebalance_Algo = bt.algos.PTE_Rebalance(
+    PTE_rebalance_Algo = bt2.algos.PTE_Rebalance(
         0.01,
         wdf,
         lookback=pd.DateOffset(months=3),
@@ -1831,10 +1831,10 @@ def test_PTE_Rebalance():
 
 
 def test_close_positions_after_date():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    c3 = bt.Security("c3")
-    s = bt.Strategy("s", children=[c1, c2, c3])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    c3 = bt2.Security("c3")
+    s = bt2.Strategy("s", children=[c1, c2, c3])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -1866,10 +1866,10 @@ def test_close_positions_after_date():
 
 
 def test_roll_positions_after_date():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    c3 = bt.Security("c3")
-    s = bt.Strategy("s", children=[c1, c2, c3])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    c3 = bt2.Security("c3")
+    s = bt2.Strategy("s", children=[c1, c2, c3])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -1904,9 +1904,9 @@ def test_roll_positions_after_date():
 
 
 def test_replay_transactions():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    s = bt.Strategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    s = bt2.Strategy("s", children=[c1, c2])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -1942,9 +1942,9 @@ def test_replay_transactions():
 
 
 def test_replay_transactions_consistency():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    s = bt.Strategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    s = bt2.Strategy("s", children=[c1, c2])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
 
@@ -1958,23 +1958,23 @@ def test_replay_transactions_consistency():
     transactions = transactions.set_index(["Date", "Security"])
 
     algo = algos.ReplayTransactions("transactions")
-    strategy = bt.Strategy("strategy", algos=[algo], children=[c1, c2])
-    backtest = bt.backtest.Backtest(
+    strategy = bt2.Strategy("strategy", algos=[algo], children=[c1, c2])
+    backtest = bt2.backtest.Backtest(
         strategy,
         data,
         name="Test",
         additional_data={"bidoffer": {}, "transactions": transactions},
     )
-    out = bt.run(backtest)
+    out = bt2.run(backtest)
     t1 = transactions.sort_index(axis=1)
     t2 = out.get_transactions().sort_index(axis=1)
     assert t1.equals(t2)
 
 
 def test_simulate_rfq_transactions():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    s = bt.Strategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    s = bt2.Strategy("s", children=[c1, c2])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -2019,9 +2019,9 @@ def test_simulate_rfq_transactions():
 
 
 def test_update_risk():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    s = bt.Strategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    s = bt2.Strategy("s", children=[c1, c2])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     data.loc[dts[1], "c1"] = 105
@@ -2059,9 +2059,9 @@ def test_update_risk():
 
 
 def test_update_risk_history_1():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    s = bt.Strategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    s = bt2.Strategy("s", children=[c1, c2])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     data.loc[dts[1], "c1"] = 105
@@ -2093,9 +2093,9 @@ def test_update_risk_history_1():
 
 
 def test_update_risk_history_2():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    s = bt.Strategy("s", children=[c1, c2])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    s = bt2.Strategy("s", children=[c1, c2])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
     data.loc[dts[1], "c1"] = 105
@@ -2132,10 +2132,10 @@ def test_update_risk_history_2():
 
 
 def test_hedge_risk():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    c3 = bt.Security("c3")
-    s = bt.Strategy("s", children=[c1, c2, c3])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    c3 = bt2.Security("c3")
+    s = bt2.Strategy("s", children=[c1, c2, c3])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -2150,7 +2150,7 @@ def test_hedge_risk():
     risk2["c2"] = 5
     risk2["c3"] = 10
 
-    stack = bt.core.AlgoStack(
+    stack = bt2.core.AlgoStack(
         algos.UpdateRisk("Risk1"),
         algos.UpdateRisk("Risk2"),
         algos.SelectThese(["c2", "c3"]),
@@ -2176,10 +2176,10 @@ def test_hedge_risk():
 
 
 def test_hedge_risk_nan():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    c3 = bt.Security("c3")
-    s = bt.Strategy("s", children=[c1, c2, c3])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    c3 = bt2.Security("c3")
+    s = bt2.Strategy("s", children=[c1, c2, c3])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -2194,13 +2194,13 @@ def test_hedge_risk_nan():
     risk2["c2"] = 5
     risk2["c3"] = 10
 
-    stack = bt.core.AlgoStack(
+    stack = bt2.core.AlgoStack(
         algos.UpdateRisk("Risk1"),
         algos.UpdateRisk("Risk2"),
         algos.SelectThese(["c2", "c3"]),
         algos.HedgeRisks(["Risk1", "Risk2"], throw_nan=False),
     )
-    stack_throw = bt.core.AlgoStack(
+    stack_throw = bt2.core.AlgoStack(
         algos.UpdateRisk("Risk1"),
         algos.UpdateRisk("Risk2"),
         algos.SelectThese(["c2", "c3"]),
@@ -2223,10 +2223,10 @@ def test_hedge_risk_nan():
 
 
 def test_hedge_risk_pseudo_under():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    c3 = bt.Security("c3")
-    s = bt.Strategy("s", children=[c1, c2, c3])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    c3 = bt2.Security("c3")
+    s = bt2.Strategy("s", children=[c1, c2, c3])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -2240,7 +2240,7 @@ def test_hedge_risk_pseudo_under():
     risk2["c1"] = 2
     risk2["c3"] = 10
 
-    stack = bt.core.AlgoStack(
+    stack = bt2.core.AlgoStack(
         algos.UpdateRisk("Risk1"),
         algos.UpdateRisk("Risk2"),
         algos.SelectThese(["c2"]),
@@ -2266,10 +2266,10 @@ def test_hedge_risk_pseudo_under():
 
 
 def test_hedge_risk_pseudo_over():
-    c1 = bt.Security("c1")
-    c2 = bt.Security("c2")
-    c3 = bt.Security("c3")
-    s = bt.Strategy("s", children=[c1, c2, c3])
+    c1 = bt2.Security("c1")
+    c2 = bt2.Security("c2")
+    c3 = bt2.Security("c3")
+    s = bt2.Strategy("s", children=[c1, c2, c3])
     dts = pd.date_range("2010-01-01", periods=3)
     data = pd.DataFrame(index=dts, columns=["c1", "c2", "c3"], data=100)
     c1 = s["c1"]
@@ -2282,7 +2282,7 @@ def test_hedge_risk_pseudo_over():
     risk1["c2"] = 10
     risk1["c3"] = 10  # Same risk as c2
 
-    stack = bt.core.AlgoStack(
+    stack = bt2.core.AlgoStack(
         algos.UpdateRisk("Risk1"),
         algos.SelectThese(["c2", "c3"]),
         algos.HedgeRisks(["Risk1"], pseudo=True),

@@ -7,11 +7,11 @@ import pytest
 
 from unittest import mock
 
-import bt
-from bt.core import Node, StrategyBase, SecurityBase, AlgoStack, Strategy
-from bt.core import FixedIncomeStrategy, HedgeSecurity, FixedIncomeSecurity
-from bt.core import CouponPayingSecurity, CouponPayingHedgeSecurity
-from bt.core import is_zero
+import bt2
+from bt2.core import Node, StrategyBase, SecurityBase, AlgoStack, Strategy
+from bt2.core import FixedIncomeStrategy, HedgeSecurity, FixedIncomeSecurity
+from bt2.core import CouponPayingSecurity, CouponPayingHedgeSecurity
+from bt2.core import is_zero
 
 
 def test_node_tree1():
@@ -2062,9 +2062,9 @@ def test_strategy_tree_paper():
     s = Strategy(
         "s",
         [
-            bt.algos.SelectWhere(data > 100),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.SelectWhere(data > 100),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
     )
 
@@ -2493,13 +2493,13 @@ def test_securitybase_allocate_commisions():
     tw[signal1] = -1.0
     tw[signal2] = 1.0
 
-    s1 = bt.Strategy(
+    s1 = bt2.Strategy(
         "long_short",
-        [bt.algos.WeighTarget(tw), bt.algos.RunDaily(), bt.algos.Rebalance()],
+        [bt2.algos.WeighTarget(tw), bt2.algos.RunDaily(), bt2.algos.Rebalance()],
     )
 
     ####now we create the Backtest , commissions=(lambda q, p: abs(p * q) * comms)
-    t = bt.Backtest(
+    t = bt2.Backtest(
         s1,
         price,
         initial_capital=1000000,
@@ -2508,7 +2508,7 @@ def test_securitybase_allocate_commisions():
     )
 
     ####and let's run it!
-    res = bt.run(t)
+    res = bt2.run(t)
     ########################
 
 
@@ -3875,20 +3875,20 @@ def test_strategy_combined_universe_regression():
     child_strategy1 = Strategy(
         "child_strategy1",
         [
-            bt.algos.RunOnce(),
-            bt.algos.SelectAll(),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunOnce(),
+            bt2.algos.SelectAll(),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
     )
 
     child_strategy2 = Strategy(
         "child_strategy2",
         [
-            bt.algos.RunOnce(),
-            bt.algos.SelectAll(),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunOnce(),
+            bt2.algos.SelectAll(),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
     )
 
@@ -3896,22 +3896,22 @@ def test_strategy_combined_universe_regression():
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
 
     tests = [
-        bt.Backtest(child_strategy1, data),
-        bt.Backtest(child_strategy2, data),
+        bt2.Backtest(child_strategy1, data),
+        bt2.Backtest(child_strategy2, data),
     ]
 
-    parent_strategy = bt.Strategy(
+    parent_strategy = bt2.Strategy(
         "parent_strategy",
         [
-            bt.algos.RunOnce(),
-            bt.algos.SelectAll(),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunOnce(),
+            bt2.algos.SelectAll(),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
         children=[x.strategy for x in tests],
     )
-    test = bt.Backtest(parent_strategy, data)
-    result = bt.run(test)
+    test = bt2.Backtest(parent_strategy, data)
+    result = bt2.run(test)
     weights = result.get_security_weights()
 
     assert result["parent_strategy"]
@@ -3927,20 +3927,20 @@ def test_strategy_combined_universe_regression_backtest_run_first():
     child_strategy1 = Strategy(
         "child_strategy1",
         [
-            bt.algos.RunOnce(),
-            bt.algos.SelectAll(),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunOnce(),
+            bt2.algos.SelectAll(),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
     )
 
     child_strategy2 = Strategy(
         "child_strategy2",
         [
-            bt.algos.RunOnce(),
-            bt.algos.SelectAll(),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunOnce(),
+            bt2.algos.SelectAll(),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
     )
 
@@ -3948,28 +3948,28 @@ def test_strategy_combined_universe_regression_backtest_run_first():
     data = pd.DataFrame(index=dts, columns=["c1", "c2"], data=100)
 
     tests = [
-        bt.Backtest(child_strategy1, data),
-        bt.Backtest(child_strategy2, data),
+        bt2.Backtest(child_strategy1, data),
+        bt2.Backtest(child_strategy2, data),
     ]
 
     results = []
     for test in tests:
-        results.append(bt.run(test))
+        results.append(bt2.run(test))
 
-    merged_prices_df = bt.merge(results[0].prices, results[1].prices)
+    merged_prices_df = bt2.merge(results[0].prices, results[1].prices)
 
-    parent_strategy = bt.Strategy(
+    parent_strategy = bt2.Strategy(
         "parent_strategy",
         [
-            bt.algos.RunOnce(),
-            bt.algos.SelectAll(),
-            bt.algos.WeighEqually(),
-            bt.algos.Rebalance(),
+            bt2.algos.RunOnce(),
+            bt2.algos.SelectAll(),
+            bt2.algos.WeighEqually(),
+            bt2.algos.Rebalance(),
         ],
         children=[x.strategy for x in tests],
     )
-    test = bt.Backtest(parent_strategy, merged_prices_df)
-    result = bt.run(test)
+    test = bt2.Backtest(parent_strategy, merged_prices_df)
+    result = bt2.run(test)
     weights = result.get_security_weights()
 
     assert result["parent_strategy"]

@@ -11,7 +11,7 @@ import pyprind
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
-import bt
+import bt2
 
 
 def run(*backtests):
@@ -71,7 +71,7 @@ def benchmark_random(backtest, random_strategy, nsim=100):
     # create and run random backtests
     for i in tqdm(range(nsim)):
         random_strategy.name = "random_%s" % i
-        rbt = bt.Backtest(random_strategy, data)
+        rbt = bt2.Backtest(random_strategy, data)
         rbt.run()
 
         bts.append(rbt)
@@ -297,7 +297,7 @@ class Backtest(object):
             # for security weights
             vals = {}
             for m in self.strategy.members:
-                if isinstance(m, bt.core.SecurityBase):
+                if isinstance(m, bt2.core.SecurityBase):
                     if self.strategy.fixed_income:
                         m_values = m.notional_values.copy()
                     else:
@@ -603,6 +603,6 @@ class RenormalizedFixedIncomeResult(Result):
         """
         # Compute additive returns net of flows
         returns = s.values.diff() - s.flows
-        prices = bt.core.PAR * (1.0 + (returns / v).cumsum())
-        prices.iloc[0] = bt.core.PAR
+        prices = bt2.core.PAR * (1.0 + (returns / v).cumsum())
+        prices.iloc[0] = bt2.core.PAR
         return prices
